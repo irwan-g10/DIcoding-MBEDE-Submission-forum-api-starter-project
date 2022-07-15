@@ -5,6 +5,7 @@ const ThreadUseCase = require("../ThreadUseCase");
 describe("ThreadUseCase", () => {
   it("should orchestrating the add user action correctly", async () => {
     // Arrange
+    const id = "user-123";
     const useCasePayload = {
       title: "sebuah thread dari irwan",
       body: "sebuah body thread dari irwan",
@@ -14,6 +15,7 @@ describe("ThreadUseCase", () => {
       id: "thread-123",
       title: useCasePayload.title,
       body: useCasePayload.body,
+      owner: useCasePayload.owner,
     };
 
     /** creating dependency of use case */
@@ -30,7 +32,7 @@ describe("ThreadUseCase", () => {
     });
 
     // Action
-    const addedNewThread = await getThreadUseCase.addThread(useCasePayload);
+    const addedNewThread = await getThreadUseCase.addThread(useCasePayload, id);
 
     // Assert
     expect(addedNewThread).toStrictEqual(expectedUseCasePayLoad);
@@ -38,6 +40,7 @@ describe("ThreadUseCase", () => {
       new NewThread({
         title: useCasePayload.title,
         body: useCasePayload.body,
+        owner: id,
       })
     );
   });

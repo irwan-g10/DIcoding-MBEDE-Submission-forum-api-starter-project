@@ -6,10 +6,11 @@ const ThreadTableTestHelper = {
     id = "thread-123",
     title = "sebuah thread title dari irwan",
     body = "sebuah thread body dari irwan",
+    owner = "irwan-123",
   }) {
     const query = {
-      text: "INSERT INTO threads VALUES($1, $2, $3)",
-      values: [id, title, body],
+      text: "INSERT INTO threads VALUES($1, $2, $3, $4)",
+      values: [id, title, body, owner],
     };
 
     await pool.query(query);

@@ -1,7 +1,10 @@
 const pool = require("../../database/postgres/pool");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadTableTestHelper");
+const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
+const AuthenticationsTableTestHelper = require("../../../../tests/AuthenticationsTableTestHelper");
 const container = require("../../container");
 const createServer = require("../createServer");
+const { payload } = require("@hapi/hapi/lib/validation");
 
 describe("/threads endpoint", () => {
   afterAll(async () => {
@@ -10,6 +13,8 @@ describe("/threads endpoint", () => {
 
   afterEach(async () => {
     await ThreadsTableTestHelper.cleanTable();
+    await UsersTableTestHelper.cleanTable();
+    await AuthenticationsTableTestHelper.cleanTable();
   });
 
   describe("when POST /threads", () => {
@@ -23,10 +28,32 @@ describe("/threads endpoint", () => {
       const server = await createServer(container);
 
       // Action
+      await server.inject({
+        method: "POST",
+        url: "/users",
+        payload: {
+          username: "irwan_g10",
+          password: "secret",
+          fullname: "Irwan Gumilar",
+        },
+      });
+
+      const auth = await server.inject({
+        method: "POST",
+        url: "/authentications",
+        payload: {
+          username: "irwan_g10",
+          password: "secret",
+        },
+      });
+
       const response = await server.inject({
         method: "POST",
         url: "/threads",
         payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${JSON.parse(auth.payload).data.accessToken}`,
+        },
       });
 
       // Assert
@@ -43,11 +70,33 @@ describe("/threads endpoint", () => {
       };
       const server = await createServer(container);
 
+      await server.inject({
+        method: "POST",
+        url: "/users",
+        payload: {
+          username: "irwan_g10",
+          password: "secret",
+          fullname: "Irwan Gumilar",
+        },
+      });
+
+      const auth = await server.inject({
+        method: "POST",
+        url: "/authentications",
+        payload: {
+          username: "irwan_g10",
+          password: "secret",
+        },
+      });
+
       // Action
       const response = await server.inject({
         method: "POST",
         url: "/threads",
         payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${JSON.parse(auth.payload).data.accessToken}`,
+        },
       });
 
       // Assert
@@ -64,14 +113,37 @@ describe("/threads endpoint", () => {
       const requestPayload = {
         title: "sebuah thread title dari irwan",
         body: true,
+        owner: "user-123",
       };
       const server = await createServer(container);
 
       // Action
+
+      await server.inject({
+        method: "POST",
+        url: "/users",
+        payload: {
+          username: "irwan_g10",
+          password: "secret",
+          fullname: "Irwan Gumilar",
+        },
+      });
+
+      const auth = await server.inject({
+        method: "POST",
+        url: "/authentications",
+        payload: {
+          username: "irwan_g10",
+          password: "secret",
+        },
+      });
       const response = await server.inject({
         method: "POST",
         url: "/threads",
         payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${JSON.parse(auth.payload).data.accessToken}`,
+        },
       });
 
       // Assert
