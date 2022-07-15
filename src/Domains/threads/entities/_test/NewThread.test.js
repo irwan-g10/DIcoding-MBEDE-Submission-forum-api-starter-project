@@ -1,6 +1,6 @@
 const NewThread = require("../NewThread");
 
-describe("a NewThread entities", () => {
+fdescribe("a NewThread entities", () => {
   it("should throw error when payload not contain needed property", () => {
     // Arrange
     const payload = {
@@ -18,6 +18,7 @@ describe("a NewThread entities", () => {
     const payload = {
       title: "abc",
       body: { text: "halo" },
+      owner: "irwan-123",
     };
 
     // Action & Assert

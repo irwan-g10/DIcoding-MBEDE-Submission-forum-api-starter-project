@@ -17,9 +17,10 @@ describe("a AddedNewThread entities", () => {
   it("should throw error when payload not meet data type specification", () => {
     // Arrange
     const payload = {
-      id: "123",
+      id: "thread-123",
       title: "abc",
       body: { text: "halo" },
+      owner: "user-123",
     };
 
     // Action & Assert
@@ -33,6 +34,7 @@ describe("a AddedNewThread entities", () => {
       id: "thread-123",
       title: "sebuah thread title dari irwan",
       body: "sebuah thread body dari irwan",
+      owner: "user-123",
     };
 
     // Action
@@ -42,5 +44,6 @@ describe("a AddedNewThread entities", () => {
     expect(addedNewThread.id).toEqual(payload.id);
     expect(addedNewThread.title).toEqual(payload.title);
     expect(addedNewThread.body).toEqual(payload.body);
+    expect(addedNewThread.owner).toEqual(payload.owner);
   });
 });
