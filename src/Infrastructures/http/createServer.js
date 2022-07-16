@@ -8,6 +8,7 @@ const DomainErrorTranslator = require("../../Commons/exceptions/DomainErrorTrans
 const users = require("../../Interfaces/http/api/users");
 const authentications = require("../../Interfaces/http/api/authentications");
 const threads = require("../../Interfaces/http/api/threads");
+const comments = require("../../Interfaces/http/api/comments");
 
 const createServer = async (container) => {
   const server = Hapi.server({
@@ -38,6 +39,10 @@ const createServer = async (container) => {
 
   await server.register([
     {
+      plugin: comments,
+      options: { container },
+    },
+    {
       plugin: users,
       options: { container },
     },
@@ -54,6 +59,7 @@ const createServer = async (container) => {
   server.ext("onPreResponse", (request, h) => {
     // mendapatkan konteks response dari request
     const { response } = request;
+    // console.log(response);
 
     if (response instanceof Error) {
       // bila response tersebut error, tangani sesuai kebutuhan

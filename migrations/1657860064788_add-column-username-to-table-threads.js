@@ -7,6 +7,7 @@ exports.up = (pgm) => {
   pgm.addColumn("threads", {
     owner: {
       type: "VARCHAR(50)",
+      notNull: true,
     },
     date: {
       type: "TEXT",
@@ -24,7 +25,7 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropConstraint("threads", "fk_threads.username_users.id");
-  pgm.dropColumn("threads", "username");
+  pgm.dropConstraint("threads", "fk_threads.owner_users.id");
+  pgm.dropColumn("threads", "owner");
   pgm.dropColumn("threads", "date");
 };

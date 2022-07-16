@@ -18,6 +18,7 @@ const BcryptPasswordHash = require("./security/BcryptPasswordHash");
 
 // use case
 const AddUserUseCase = require("../Applications/use_case/AddUserUseCase");
+const ThreadUseCase = require("../Applications/use_case/ThreadUseCase");
 const AuthenticationTokenManager = require("../Applications/security/AuthenticationTokenManager");
 const JwtTokenManager = require("./security/JwtTokenManager");
 const LoginUserUseCase = require("../Applications/use_case/LoginUserUseCase");
@@ -25,13 +26,29 @@ const AuthenticationRepository = require("../Domains/authentications/Authenticat
 const AuthenticationRepositoryPostgres = require("./repository/AuthenticationRepositoryPostgres");
 const LogoutUserUseCase = require("../Applications/use_case/LogoutUserUseCase");
 const RefreshAuthenticationUseCase = require("../Applications/use_case/RefreshAuthenticationUseCase");
-const ThreadUseCase = require("../Applications/use_case/ThreadUseCase");
+const CommentRepository = require("../Domains/comments/CommentRepository");
+const CommentRepositoryPostgres = require("./repository/CommentRepositoryPostgre");
+const CommentUseCase = require("../Applications/use_case/CommentUseCase");
 
 // creating container
 const container = createContainer();
 
 // registering services and repository
 container.register([
+  {
+    key: CommentRepository.name,
+    Class: CommentRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
+        },
+      ],
+    },
+  },
   {
     key: ThreadRepository.name,
     Class: ThreadRepositoryPostgres,
@@ -97,6 +114,19 @@ container.register([
 
 // registering use cases
 container.register([
+  {
+    key: CommentUseCase.name,
+    Class: CommentUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
+        {
+          name: "commentRepository",
+          internal: CommentRepository.name,
+        },
+      ],
+    },
+  },
   {
     key: ThreadUseCase.name,
     Class: ThreadUseCase,
