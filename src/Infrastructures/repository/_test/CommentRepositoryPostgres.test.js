@@ -54,7 +54,6 @@ describe("CommentRepositoryPostgres", () => {
     // Action
     await userRepositoryPostgres.addUser(newUser);
     await threadRepositoryPostgres.addThread(newThread);
-    // console.log(a, b);
     await commentRepositoryPostgres.addComment(newComment);
     // // Assert
     const comment = await CommentsTableTestHelper.findCommentById(

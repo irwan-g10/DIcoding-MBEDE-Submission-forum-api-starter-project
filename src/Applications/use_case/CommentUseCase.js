@@ -10,5 +10,11 @@ class CommentUseCase {
 
     return await this._commentRepository.addComment(newComment);
   }
+  async getCommentsByThreadId(threadId) {
+    return await this._commentRepository.getCommentsByThreadId(threadId);
+  }
+  async deleteComment(id) {
+    return await this._commentRepository.deleteComment(id);
+  }
 }
 module.exports = CommentUseCase;
