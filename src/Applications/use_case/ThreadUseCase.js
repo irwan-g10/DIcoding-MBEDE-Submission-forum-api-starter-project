@@ -10,6 +10,8 @@ class ThreadUseCase {
   }
 
   async getThreadById(id) {
+    this._threadRepository.verifyAvailableThread(id);
+
     return this._threadRepository.getThreadById(id);
   }
 }

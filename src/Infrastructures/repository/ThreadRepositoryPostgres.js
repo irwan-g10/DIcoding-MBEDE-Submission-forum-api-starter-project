@@ -1,5 +1,6 @@
 const NotFoundError = require("../../Commons/exceptions/NotFoundError");
 const AddedNewThread = require("../../Domains/threads/entities/AddedNewThread");
+const DetailThread = require("../../Domains/threads/entities/DetailThread");
 const ThreadRepository = require("../../Domains/threads/ThreadRepository");
 
 class ThreadRepositoryPostgres extends ThreadRepository {
@@ -34,11 +35,22 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     const result = await this._pool.query(query);
 
+    return new DetailThread({ ...result.rows[0] });
+  }
+
+  async verifyAvailableThread(id) {
+    const query = {
+      text: `SELECT * 
+      FROM threads 
+      WHERE id = $1 `,
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
     if (!result.rows[0]) {
       throw new NotFoundError("Thread tidak ada");
     }
-
-    return { ...result.rows[0] };
   }
 }
 

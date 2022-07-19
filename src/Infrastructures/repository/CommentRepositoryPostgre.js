@@ -1,6 +1,7 @@
 const NotFoundError = require("../../Commons/exceptions/NotFoundError");
 const CommentRepository = require("../../Domains/comments/CommentRepository");
 const AddedNewComment = require("../../Domains/comments/entities/AddedNewComment");
+const DetailComment = require("../../Domains/comments/entities/DetailComment");
 
 class CommentRepositoryPostgres extends CommentRepository {
   constructor(pool, idGenerator) {
@@ -33,8 +34,9 @@ class CommentRepositoryPostgres extends CommentRepository {
     };
 
     const result = await this._pool.query(query);
+    const detail = result.rows.map((comment) => new DetailComment(comment));
 
-    return result.rows;
+    return detail;
   }
 
   async deleteComment(id) {
