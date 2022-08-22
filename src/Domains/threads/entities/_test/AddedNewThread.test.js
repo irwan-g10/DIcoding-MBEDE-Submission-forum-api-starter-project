@@ -21,6 +21,7 @@ describe("a AddedNewThread entities", () => {
       title: "abc",
       body: { text: "halo" },
       owner: "user-123",
+      date: '10-12-2000'
     };
 
     // Action & Assert
@@ -35,6 +36,7 @@ describe("a AddedNewThread entities", () => {
       title: "sebuah thread title dari irwan",
       body: "sebuah thread body dari irwan",
       owner: "user-123",
+      date: '10-12-2000'
     };
 
     // Action

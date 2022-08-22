@@ -4,7 +4,6 @@ const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const AuthenticationsTableTestHelper = require("../../../../tests/AuthenticationsTableTestHelper");
 const container = require("../../container");
 const createServer = require("../createServer");
-const { payload } = require("@hapi/hapi/lib/validation");
 
 describe("/threads endpoint", () => {
   afterAll(async () => {
@@ -155,4 +154,57 @@ describe("/threads endpoint", () => {
       );
     });
   });
+
+  describe('when GET /threads/{threadId}', ()=> {
+    it('should response 200 and persisted thread', async () => {
+      const requestPayload = {
+        title: "sebuah thread title dari irwan",
+        body: "sebuah thread body dari irwan",
+      };
+
+      const server = await createServer(container);
+
+      // Action
+      await server.inject({
+        method: "POST",
+        url: "/users",
+        payload: {
+          username: "irwan_g10",
+          password: "secret",
+          fullname: "Irwan Gumilar",
+        },
+      });
+
+      const auth = await server.inject({
+        method: "POST",
+        url: "/authentications",
+        payload: {
+          username: "irwan_g10",
+          password: "secret",
+        },
+      });
+
+      const thread = await server.inject({
+        method: "POST",
+        url: "/threads",
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${JSON.parse(auth.payload).data.accessToken}`,
+        },
+      });
+      const threadJson = JSON.parse(thread.payload);
+
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${threadJson.data.addedThread.id}`
+      })
+      
+      
+      const responseJson = JSON.parse(response.payload);
+      // console.log(threadJson.data.addedThread.id);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.thread).toBeDefined();
+    })
+  })
 });

@@ -26,6 +26,19 @@ const CommentsTableTestHelper = {
     return result.rows;
   },
 
+  async getCommentsByThreadId(threadId) {
+    const query = {
+      text: `SELECT comments.id, comments.content, comments.date, comments.is_delete, users.username
+      FROM comments
+      INNER JOIN users ON users.id = comments.owner
+      WHERE comments.thread = $1`,
+      values: [threadId],
+    };
+
+    const result = await pool.query(query);
+    return result.rows
+  },
+
   async cleanTable() {
     await pool.query("DELETE FROM comments WHERE 1=1");
   },

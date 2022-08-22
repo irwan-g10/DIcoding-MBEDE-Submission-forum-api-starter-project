@@ -36,6 +36,9 @@ DomainErrorTranslator._directories = {
   "NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
     "tidak dapat membuat thread baru karena properti yang dibutuhkan tidak ada"
   ),
+  "DETAIL_THREAD.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
+    "tidak dapat membuat detail thread karena properti yang dibutuhkan tidak ada"
+  ),
   "NEW_THREAD.NOT_FOUND": new InvariantError(
     "tidak dapat manampilkan thread karena thread tidak ada"
   ),

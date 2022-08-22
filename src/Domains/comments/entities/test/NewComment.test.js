@@ -1,6 +1,6 @@
 const NewComment = require("../NewComment");
 
-fdescribe("a NewThread entities", () => {
+describe("a NewThread entities", () => {
   it("should throw error when payload not contain needed property", () => {
     // Arrange
     const payload = {

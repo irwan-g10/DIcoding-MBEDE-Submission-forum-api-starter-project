@@ -7,7 +7,8 @@ class CommentUseCase {
   }
 
   async addComment(useCasePayload, thread, owner) {
-    this._threadRepository.verifyAvailableThread(thread);
+    // console.log(thread);
+    await this._threadRepository.verifyAvailableThread(thread);
     const newComment = new NewComment({ ...useCasePayload, thread, owner });
 
     return await this._commentRepository.addComment(newComment);
@@ -15,7 +16,11 @@ class CommentUseCase {
   async getCommentsByThreadId(threadId) {
     return await this._commentRepository.getCommentsByThreadId(threadId);
   }
-  async deleteComment(id) {
+  async deleteComment(id, owner) {
+    // console.log('a');
+    await this._commentRepository.verifyAvailableComment(id);
+    await this._commentRepository.verifyCommentOwner(id, owner);
+
     return await this._commentRepository.deleteComment(id);
   }
 }
