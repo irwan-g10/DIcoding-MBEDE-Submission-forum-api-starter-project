@@ -1,7 +1,8 @@
 const NewThread = require("../../Domains/threads/entities/NewThread");
 class ThreadUseCase {
-  constructor({ threadRepository }) {
+  constructor({ threadRepository, commentRepository }) {
     this._threadRepository = threadRepository;
+    this._commentRepository = commentRepository;    
   }
 
   async addThread(useCasePayload, id) {
@@ -10,9 +11,15 @@ class ThreadUseCase {
   }
 
   async getThreadById(id) {
-    this._threadRepository.verifyAvailableThread(id);
+    await this._threadRepository.verifyAvailableThread(id);
+    
+    const thread = await this._threadRepository.getThreadById(id);
+    const comment = await this._commentRepository.getCommentsByThreadId(id);
+    thread.comments = comment
 
-    return this._threadRepository.getThreadById(id);
+    // console.log(thread)
+
+    return  thread
   }
 }
 

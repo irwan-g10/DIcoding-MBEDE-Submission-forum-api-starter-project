@@ -45,6 +45,7 @@ describe("/threads endpoint", () => {
           password: "secret",
         },
       });
+      
 
       const response = await server.inject({
         method: "POST",
@@ -61,6 +62,30 @@ describe("/threads endpoint", () => {
       expect(responseJson.status).toEqual("success");
       expect(responseJson.data.addedThread).toBeDefined();
     });
+
+    it('should response 401 when request unauthorized', async() => {
+      // Arrange
+      const requestPayload = {
+        title: "sebuah thread title dari irwan",
+      };
+
+      const server = await createServer(container);
+      
+      // Action
+      const response = await server.inject({
+        method: "POST",
+        url: "/threads",
+        payload: requestPayload,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.error).toEqual("Unauthorized");
+      expect(responseJson.message).toEqual(
+        "Missing authentication"
+      );
+    })
 
     it("should response 400 when request payload not contain needed property", async () => {
       // Arrange
@@ -205,6 +230,23 @@ describe("/threads endpoint", () => {
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.thread).toBeDefined();
+    })
+
+    it('should response 404 when get not found thread', async () => {
+
+      const server = await createServer(container);
+
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/xxx`
+      })
+      
+      
+      const responseJson = JSON.parse(response.payload);
+      // console.log(responseJson)
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('Thread tidak ada');
     })
   })
 });

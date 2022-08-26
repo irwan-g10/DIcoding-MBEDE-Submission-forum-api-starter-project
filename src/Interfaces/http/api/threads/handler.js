@@ -27,11 +27,11 @@ class ThreadsHandler {
     const { threadId } = request.params;
 
     const threadUseCase = this._container.getInstance(ThreadUseCase.name);
-    const commentsUseCase = this._container.getInstance(CommentUseCase.name);
+    // const commentsUseCase = this._container.getInstance(CommentUseCase.name);
 
-    const getThread = await threadUseCase.getThreadById(threadId);
-    const getComments = await commentsUseCase.getCommentsByThreadId(threadId);
-    const thread = { ...getThread, comments: getComments };
+    const thread = await threadUseCase.getThreadById(threadId);
+    // const getComments = await commentsUseCase.getCommentsByThreadId(threadId);
+    // const thread = { ...getThread, comments: getComments };
 
     const response = h.response({
       status: "success",
