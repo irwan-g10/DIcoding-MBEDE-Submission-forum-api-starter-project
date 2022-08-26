@@ -1,18 +1,42 @@
-name: Continuous Deployment
+name: Continuous Integration
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{secrets.HEROKU_APP_NAME}} #Must be unique in Heroku
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          node-version: ${{ matrix.node-version }}
+      - name: npm install migrate and test
+        run: |
+          npm install
+          npm run migrate up
+          npm run test
+        env:
+          CI: true
+          PGHOST: ${{ secrets.PGHOST }}
+          PGHOST_TEST: ${{ secrets.PGHOST_TEST }}
+          PGUSER: ${{ secrets.PGUSER }}
+          PGUSER_TEST: ${{ secrets.PGUSER_TEST }}
+          PGDATABASE: ${{ secrets.PGDATABASE }}
+          PGDATABASE_TEST: ${{ secrets.PGDATABASE_TEST }}
+          PGPASSWORD: ${{ secrets.PGPASSWORD }}
+          PGPASSWORD_TEST: ${{ secrets.PGPASSWORD_TEST }}
+          PGPORT: ${{ secrets.PGPORT}}
+          PGPORT_TEST: ${{ secrets.PGPORT_TEST }}
+          ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
+          REFRESH_TOKEN_KEY: ${{ secrets.REFRESH_TOKEN_KEY }}
+          PGSSLMODE: ${{ secrets.PGSSLMODE }}
