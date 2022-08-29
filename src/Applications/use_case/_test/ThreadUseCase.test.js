@@ -61,6 +61,9 @@ describe("ThreadUseCase", () => {
     expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(
       expectedUseCasePayload.id
     );
+    expect(mockThreadRepository.verifyAvailableThread).toBeCalledWith(
+      expectedUseCasePayload.id
+    );
 
 
   })

@@ -41,16 +41,9 @@ describe('a DetailComment', () => {
         }
         
         // action
-        const deletedPayload = {
-            id: 'test-123',
-            content: 'ini content ke2',
-            date: '10-12-2022',
-            is_delete: false,
-            username: 'user123'
-        }
+        
     
         // action
-        const deletedDetailComment = new DetailComment(deletedPayload);
         const detailComment = new DetailComment(payload);
 
         //assert
@@ -58,6 +51,20 @@ describe('a DetailComment', () => {
         expect(detailComment.content).toEqual('**komentar telah dihapus**')
         expect(detailComment.date).toEqual(payload.date)
         expect(detailComment.username).toEqual(payload.username)
+        
+    })
+
+    it('should show deleted comment correctly', () => {
+        const deletedPayload = {
+            id: 'test-123',
+            content: 'ini content ke2',
+            date: '10-12-2022',
+            is_delete: false,
+            username: 'user123'
+        }
+        
+        const deletedDetailComment = new DetailComment(deletedPayload);
+
         expect(deletedDetailComment.id).toEqual(deletedPayload.id)
         expect(deletedDetailComment.content).toEqual(deletedDetailComment.content)
         expect(deletedDetailComment.date).toEqual(deletedPayload.date)
