@@ -81,7 +81,7 @@ describe("CommentUseCase", () => {
     })];
 
     const mockCommentRepository = new CommentRepository();
-    const mockThreadRepository = new ThreadRepository();
+    // const mockThreadRepository = new ThreadRepository();
 
     mockCommentRepository.getCommentsByThreadId = jest
       .fn()
@@ -97,7 +97,7 @@ describe("CommentUseCase", () => {
 
     const getCommentUseCase = new CommentUseCase({
       commentRepository: mockCommentRepository,
-      threadRepository: mockThreadRepository
+      threadRepository: {}
     });
 
     const getCommentsByThreadId = await getCommentUseCase.getCommentsByThreadId(thread)
@@ -109,12 +109,12 @@ describe("CommentUseCase", () => {
   })
 
   it('should delete comments action correctly', async () => {
-    const thread = "thread-123";
+    // const thread = "thread-123";
     const owner = 'user-123';
     const comment = 'comment-123';
 
     const mockCommentRepository = new CommentRepository();
-    const mockThreadRepository = new ThreadRepository();
+    // const mockThreadRepository = new ThreadRepository();
 
     mockCommentRepository.verifyAvailableComment = jest.fn().mockImplementation(() => Promise.resolve());
     mockCommentRepository.verifyCommentOwner = jest.fn().mockImplementation(() => Promise.resolve());
@@ -122,7 +122,7 @@ describe("CommentUseCase", () => {
 
     const getCommentUseCase = new CommentUseCase({
       commentRepository: mockCommentRepository,
-      threadRepository: mockThreadRepository
+      threadRepository: {}
     });
 
     await getCommentUseCase.deleteComment(comment, owner);
