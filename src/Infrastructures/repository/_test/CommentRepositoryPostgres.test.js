@@ -3,6 +3,8 @@ const ThreadTableTestHelper = require("../../../../tests/ThreadTableTestHelper")
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const AuthorizationError = require("../../../Commons/exceptions/AuthorizationError");
 const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
+const AddedNewComment = require("../../../Domains/comments/entities/AddedNewComment");
+const DetailComment = require("../../../Domains/comments/entities/DetailComment");
 const NewComment = require("../../../Domains/comments/entities/NewComment");
 const NewThread = require("../../../Domains/threads/entities/NewThread");
 const RegisterUser = require("../../../Domains/users/entities/RegisterUser");
@@ -57,12 +59,15 @@ describe("CommentRepositoryPostgres", () => {
       // Action
       await userRepositoryPostgres.addUser(newUser);
       await threadRepositoryPostgres.addThread(newThread);
-      await commentRepositoryPostgres.addComment(newComment);
+      const addedComment = await commentRepositoryPostgres.addComment(newComment);
       // // Assert
       const comment = await CommentsTableTestHelper.findCommentById(
         "comment-123"
-      );
+        );
+        const newAddedComment = new AddedNewComment({...newComment, id : 'comment-123'})
+        // console.log(addedCommen, newt);
       expect(comment).toHaveLength(1);
+      expect(addedComment).toEqual(newAddedComment)
     });
   })
 
@@ -103,13 +108,16 @@ describe("CommentRepositoryPostgres", () => {
       await userRepositoryPostgres.addUser(newUser);
       await threadRepositoryPostgres.addThread(newThread);
       await commentRepositoryPostgres.addComment(newComment);
-      await commentRepositoryPostgres.getCommentsByThreadId(newComment.thread);
-
+      const getComment = await commentRepositoryPostgres.getCommentsByThreadId(newComment.thread);
+      getComment[0].date = '10/12/2022'
+      const expectedGetComment = [new DetailComment({id: 'comment-123',is_delete: false, username: newUser.username, content: newComment.content, date: '10/12/2022'})]
       const comment = await CommentsTableTestHelper.getCommentsByThreadId(
         newComment.thread
-      );
-
+        );
+        
+        // console.log(getComment)
       expect(comment).toHaveLength(1);
+      expect(getComment).toEqual(expectedGetComment)
     })
   })
 

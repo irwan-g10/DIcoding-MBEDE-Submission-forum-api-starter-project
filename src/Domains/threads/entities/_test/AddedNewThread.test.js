@@ -47,5 +47,6 @@ describe("a AddedNewThread entities", () => {
     expect(addedNewThread.title).toEqual(payload.title);
     expect(addedNewThread.body).toEqual(payload.body);
     expect(addedNewThread.owner).toEqual(payload.owner);
+    expect(addedNewThread.date).toEqual(payload.date);
   });
 });

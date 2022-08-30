@@ -1,6 +1,7 @@
 const ThreadTableTestHelper = require("../../../../tests/ThreadTableTestHelper");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
+const DetailThread = require("../../../Domains/threads/entities/DetailThread");
 const NewThread = require("../../../Domains/threads/entities/NewThread");
 const RegisterUser = require("../../../Domains/users/entities/RegisterUser");
 const pool = require("../../database/postgres/pool");
@@ -42,11 +43,16 @@ describe("ThreadRepositoryPostgres", () => {
 
       // Action
       await userRepositoryPostgres.addUser(newUser);
-      await threadRepositoryPostgres.addThread(newThread);
+      const thread = await threadRepositoryPostgres.addThread(newThread);
 
       // // Assert
-      const threads = await ThreadTableTestHelper.findThreadById("thread-123");
-      expect(threads).toHaveLength(1);
+      const checkingThread = await ThreadTableTestHelper.findThreadById("thread-123");
+      expect(checkingThread).toHaveLength(1);
+      expect(thread.id).toEqual(checkingThread[0].id)
+      expect(thread.title).toEqual(checkingThread[0].title)
+      expect(thread.body).toEqual(checkingThread[0].body)
+      expect(thread.owner).toEqual(checkingThread[0].owner)
+      expect(thread.date).toEqual(checkingThread[0].date)
     });
   });
 
@@ -76,11 +82,16 @@ describe("ThreadRepositoryPostgres", () => {
       // Action
       await userRepositoryPostgres.addUser(newUser);
       const thread = await threadRepositoryPostgres.addThread(newThread);
-      await threadRepositoryPostgres.getThreadById(thread.id);
+      const getThread = await threadRepositoryPostgres.getThreadById(thread.id);
+
+      getThread.date = '10/12/2022'
+
+      const expectedGetThread = new DetailThread({id: 'thread-123', title: newThread.title, body: newThread.body, date: '10/12/2022', username: newUser.username})
 
       // // Assert
       const threads = await ThreadTableTestHelper.findThreadById(thread.id);
       expect(threads).toHaveLength(1);
+      expect(getThread).toEqual(expectedGetThread);
     })
   })
 
@@ -112,13 +123,22 @@ describe("ThreadRepositoryPostgres", () => {
       const thread = await threadRepositoryPostgres.addThread(newThread);
       await threadRepositoryPostgres.getThreadById(thread.id);
       await threadRepositoryPostgres.verifyAvailableThread(thread.id);
-      // await threadRepositoryPostgres.verifyAvailableThread('xxx');
 
       // // Assert
       const threads = await ThreadTableTestHelper.findThreadById(thread.id);
       expect(threads).toHaveLength(1);
-      // expect(correctVerify).toHaveLength(1);
       await expect(threadRepositoryPostgres.verifyAvailableThread(thread.id)).resolves.not.toThrowError(NotFoundError);
+      
+    })
+    it('should percist verifyAvailable not found thread correctly', async () => {
+      const fakeIdGenerator = () => "123"; //stub!
+
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
       await expect(threadRepositoryPostgres.verifyAvailableThread('xxx')).rejects.toThrowError(NotFoundError);
     })
   })
