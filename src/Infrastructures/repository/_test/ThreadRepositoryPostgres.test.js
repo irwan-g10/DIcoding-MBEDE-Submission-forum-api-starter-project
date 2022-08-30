@@ -43,21 +43,14 @@ describe("ThreadRepositoryPostgres", () => {
 
       // Action
       await userRepositoryPostgres.addUser(newUser);
-      const thread = await threadRepositoryPostgres.addThread(newThread);
+      await threadRepositoryPostgres.addThread(newThread);
 
       // // Assert
       const checkingThread = await ThreadTableTestHelper.findThreadById("thread-123");
       expect(checkingThread).toHaveLength(1);
-      expect(thread.id).toEqual(checkingThread[0].id)
-      expect(thread.title).toEqual(checkingThread[0].title)
-      expect(thread.body).toEqual(checkingThread[0].body)
-      expect(thread.owner).toEqual(checkingThread[0].owner)
-      expect(thread.date).toEqual(checkingThread[0].date)
+      
     });
-  });
-
-  describe('getThreadById functions', () => {
-    it('should persist getThreadById correctly', async () => {
+    it('should add thread correctly', async () => {
       const newUser = await new RegisterUser({
         username: "irwan_g10",
         password: "secret",
@@ -81,16 +74,89 @@ describe("ThreadRepositoryPostgres", () => {
 
       // Action
       await userRepositoryPostgres.addUser(newUser);
+
       const thread = await threadRepositoryPostgres.addThread(newThread);
-      const getThread = await threadRepositoryPostgres.getThreadById(thread.id);
+      
+      const checkingThread = await ThreadTableTestHelper.findThreadById("thread-123");
 
-      getThread.date = '10/12/2022'
+      expect(thread.id).toEqual(checkingThread[0].id)
+      expect(thread.title).toEqual(checkingThread[0].title)
+      expect(thread.body).toEqual(checkingThread[0].body)
+      expect(thread.owner).toEqual(checkingThread[0].owner)
+      expect(thread.date).toEqual(checkingThread[0].date)
+    })
+  });
 
-      const expectedGetThread = new DetailThread({id: 'thread-123', title: newThread.title, body: newThread.body, date: '10/12/2022', username: newUser.username})
+  describe('getThreadById functions', () => {
+    it('should persist getThreadById correctly', async () => {
+      const newUser = await new RegisterUser({
+        username: "irwan_g10",
+        password: "secret",
+        fullname: "Irwan Gumilar",
+      });
+
+      const fakeIdGenerator = () => "123"; //stub!
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+      const userRepositoryPostgres = new UserRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action
+      await userRepositoryPostgres.addUser(newUser);
+      
+      const thread = await ThreadTableTestHelper.addThread({
+        id: 'thread-123',
+        title: "sebuah thread title dari irwan",
+        body: "sebuah thread body dari irwan",
+        owner: "user-123",
+        date: 'date'
+      })
+      
 
       // // Assert
-      const threads = await ThreadTableTestHelper.findThreadById(thread.id);
+      const threads = await ThreadTableTestHelper.findThreadById(thread[0].id);
       expect(threads).toHaveLength(1);
+    })
+
+    it('should expect getThread correctly', async () => {
+      const newUser = await new RegisterUser({
+        username: "irwan_g10",
+        password: "secret",
+        fullname: "Irwan Gumilar",
+      });
+
+      const fakeIdGenerator = () => "123"; //stub!
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+      const userRepositoryPostgres = new UserRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action
+      await userRepositoryPostgres.addUser(newUser);
+      await ThreadTableTestHelper.addThread({
+        id: 'thread-123',
+        title: "sebuah thread title dari irwan",
+        body: "sebuah thread body dari irwan",
+        owner: "user-123",
+        date: 'date'
+      })
+      const getThread = await threadRepositoryPostgres.getThreadById('thread-123');
+
+      const expectedGetThread = new DetailThread({
+        id: 'thread-123',
+        title: "sebuah thread title dari irwan",
+        body: "sebuah thread body dari irwan",
+        username: "irwan_g10",
+        date: 'date'
+      })
       expect(getThread).toEqual(expectedGetThread);
     })
   })
