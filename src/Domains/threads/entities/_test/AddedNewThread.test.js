@@ -21,7 +21,7 @@ describe("a AddedNewThread entities", () => {
       title: "abc",
       body: { text: "halo" },
       owner: "user-123",
-      date: '10-12-2000'
+      // date: '10-12-2000'
     };
 
     // Action & Assert
@@ -36,7 +36,7 @@ describe("a AddedNewThread entities", () => {
       title: "sebuah thread title dari irwan",
       body: "sebuah thread body dari irwan",
       owner: "user-123",
-      date: '10-12-2000'
+      // date: '10-12-2000'
     };
 
     // Action
@@ -47,6 +47,6 @@ describe("a AddedNewThread entities", () => {
     expect(addedNewThread.title).toEqual(payload.title);
     expect(addedNewThread.body).toEqual(payload.body);
     expect(addedNewThread.owner).toEqual(payload.owner);
-    expect(addedNewThread.date).toEqual(payload.date);
+    // expect(addedNewThread.date).toEqual(payload.date);
   });
 });

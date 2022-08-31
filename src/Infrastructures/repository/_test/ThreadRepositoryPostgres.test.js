@@ -1,6 +1,7 @@
 const ThreadTableTestHelper = require("../../../../tests/ThreadTableTestHelper");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
+const AddedNewThread = require("../../../Domains/threads/entities/AddedNewThread");
 const DetailThread = require("../../../Domains/threads/entities/DetailThread");
 const NewThread = require("../../../Domains/threads/entities/NewThread");
 const RegisterUser = require("../../../Domains/users/entities/RegisterUser");
@@ -76,14 +77,13 @@ describe("ThreadRepositoryPostgres", () => {
       await userRepositoryPostgres.addUser(newUser);
 
       const thread = await threadRepositoryPostgres.addThread(newThread);
-      
-      const checkingThread = await ThreadTableTestHelper.findThreadById("thread-123");
+      console.log(thread);
 
-      expect(thread.id).toEqual(checkingThread[0].id)
-      expect(thread.title).toEqual(checkingThread[0].title)
-      expect(thread.body).toEqual(checkingThread[0].body)
-      expect(thread.owner).toEqual(checkingThread[0].owner)
-      expect(thread.date).toEqual(checkingThread[0].date)
+      const checkingThread = new AddedNewThread({ ...newThread, id: 'thread-123'})
+      
+      // const checkingThread = await ThreadTableTestHelper.findThreadById("thread-123");
+
+      expect(thread).toStrictEqual(checkingThread)
     })
   });
 
