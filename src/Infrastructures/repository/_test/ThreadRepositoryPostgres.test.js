@@ -77,7 +77,7 @@ describe("ThreadRepositoryPostgres", () => {
       await userRepositoryPostgres.addUser(newUser);
 
       const thread = await threadRepositoryPostgres.addThread(newThread);
-      console.log(thread);
+      // console.log(thread);
 
       const checkingThread = new AddedNewThread({ ...newThread, id: 'thread-123'})
       
